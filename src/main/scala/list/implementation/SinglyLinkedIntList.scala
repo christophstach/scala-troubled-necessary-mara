@@ -51,16 +51,10 @@ abstract class SinglyLinkedIntList extends IntList {
     case Empty => if (head != elem) Cons(head, Empty) else Empty
     case _ => if (head != elem) Cons(head, tail.deleteAll(elem)) else tail.deleteAll(elem)
   }
-
-  /**
-    * Scheiss funktion :D
-    *
-    * @param other the other list
-    * @return a new list, with the elements of both lists
-    */
-  override def prefix(other: IntList): IntList = tail match {
-    case Empty => Cons(head, other)
-    case _ => Cons(tail.prefix(other).head, tail.prefix(other))
+  
+  override def prefix(other: IntList): IntList = other match {
+    case Empty => Cons(head, tail)
+    case _ => Cons(other.head, prefix(other.tail))
   }
 
   override def size: Int =
@@ -116,10 +110,8 @@ abstract class SinglyLinkedIntList extends IntList {
     case _ => reduceFunc(head, tail.reduceRight(reduceFunc))
   }
 
-  override def insertionSort: IntList = tail match {
-    case Empty => Cons(head, Empty)
-    case _ => if (head <= tail.head) Cons(head, tail.insertionSort) else Cons(tail.head, Cons(head, tail.tail))
-  }
+  override def insertionSort: IntList =
+    tail.foldLeft[IntList](Cons(head, Empty))((acc, curr) => acc.insertSorted(curr))
 
   override def insertSorted(elem: Int): IntList = tail match {
     case Empty => if (head <= elem) Cons(head, Cons(elem, Empty)) else Cons(elem, Cons(head, Empty))

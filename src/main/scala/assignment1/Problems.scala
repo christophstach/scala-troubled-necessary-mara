@@ -12,7 +12,10 @@ object Problems {
     * @param itemWeight weights of the items in grams
     * @return minimum number of bags required
     */
-  def minBagsCount(capacity: Int, itemWeight: IntList): Int = ???
+  def minBagsCount(capacity: Int, itemWeight: IntList): Int = Math.ceil(
+    itemWeight.reduceRight((acc, curr) => acc + curr).toDouble / capacity.toDouble
+  ).toInt
+
 
   /**
     * Given a amount of money and a list of coin values,
@@ -45,7 +48,7 @@ object Problems {
     *
     * He has to stop at every address and drop off all the mail for this building,
     * which he computes as an extra 2 distance per address.
-    * Also taking this into account the distance for the addresses {40, 42, 52} will be 6 + 3 = 9
+    * Also taking this into account the distance for the addresses {40, 42, 52} will be 6 + 3x2 = 12
     *
     * The postman starts from one end and goes to the other.
     *
@@ -54,12 +57,19 @@ object Problems {
     * @param addresses the address numbers
     * @return the faster path: true if even, false if odd
     */
-  def shouldTakeEvenAddresses(addresses: IntList): Boolean = ???
+  def shouldTakeEvenAddresses(addresses: IntList): Boolean = {
+    val evenAddresses = addresses.filter(a => a % 2 == 0).insertionSort
+    val oddAddresses = addresses.filter(a => a % 2 == 1).insertionSort
+    val distanceEvenAddresses = (evenAddresses.get(evenAddresses.size - 1) - evenAddresses.get(0)) / 2 + evenAddresses.size * 2
+    val distanceOddAddresses = (oddAddresses.get(oddAddresses.size - 1) - oddAddresses.get(0)) / 2 + oddAddresses.size * 2
+
+    distanceEvenAddresses <= distanceOddAddresses
+  }
 
 
-  //Solving the following problem is optional, as it is a lot harder than the previous ones.
+  // Solving the following problem is optional, as it is a lot harder than the previous ones.
   // It is not a required part of the assignment, but will make all tests ins ProblemsTest turn green.
-  
+
   /**
     * The postman has recognized, that addresses which are adjacent to the one
     * in front of which he stops with his delivery bike, take less time and
