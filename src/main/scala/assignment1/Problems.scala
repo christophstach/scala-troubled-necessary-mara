@@ -1,5 +1,6 @@
 package assignment1
 
+import list.implementation.Empty
 import list.traits.IntList
 
 object Problems {
@@ -29,7 +30,13 @@ object Problems {
     * @param coins possible coins
     * @return number of possible ways the change can be returned
     */
-  def countChange(money: Int, coins: IntList): Int = ???
+  def countChange(money: Int, coins: IntList): Int = coins match {
+    case Empty => 0
+    case _ =>
+      if (money < 0) 0
+      else if (money == 0) 1
+      else countChange(money - coins.head, coins) + countChange(money, coins.tail)
+  }
 
   /**
     * A postman has a list of delivery addresses, for which he and his colleague are responsible.
